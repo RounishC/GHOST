@@ -193,9 +193,10 @@ class AStarPathfinder:
                     
                 start_point = other_segment.get_start_point()
                 
-                # Check if endpoints are very close (within 0.0001 degrees ≈ 10 meters)
-                if abs(end_point[0] - start_point[0]) < 0.0001 and \
-                   abs(end_point[1] - start_point[1]) < 0.0001:
+                # Check if endpoints are very close (within 0.001 degrees ≈ 100 meters)
+                # More lenient tolerance for real-world road network
+                if abs(end_point[0] - start_point[0]) < 0.001 and \
+                   abs(end_point[1] - start_point[1]) < 0.001:
                     graph[seg_id].append(other_id)
         
         return graph
