@@ -107,10 +107,13 @@ body, html {
     gap: 12px;
 }
 
-.logo-icon {
-    font-size: 32px;
-    filter: drop-shadow(0 0 8px var(--accent-glow));
-    animation: floatGhost 3s ease-in-out infinite;
+.brand-logo-img {
+    width: 38px;
+    height: 38px;
+    object-fit: contain;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    box-shadow: 0 0 10px rgba(0, 243, 255, 0.15);
 }
 
 .logo-text h1 {
