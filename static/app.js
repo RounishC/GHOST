@@ -226,6 +226,29 @@ function initMap() {
         });
         map.layers.add(networkLineLayer);
 
+        // Bounding box source & layer in grey line connecting the specified points
+        let boundarySource = new atlas.source.DataSource('boundarySource');
+        map.sources.add(boundarySource);
+        
+        let boundaryLineLayer = new atlas.layer.LineLayer(boundarySource, 'boundaryLineLayer', {
+            strokeColor: '#808080', // Grey
+            strokeWidth: 3,
+            lineJoin: 'round',
+            lineCap: 'round',
+            strokeOpacity: 0.8
+        });
+        map.layers.add(boundaryLineLayer);
+        
+        boundarySource.add(new atlas.data.Feature(
+            new atlas.data.LineString([
+                [77.671669, 12.923943], // 12.923943/77.671669
+                [77.665591, 12.921052], // 12.921052/77.665591
+                [77.672074, 12.927340], // 12.927340/77.672074
+                [77.665309, 12.927045], // 12.927045/77.665309
+                [77.671669, 12.923943]  // Close the loop
+            ])
+        ));
+
         // Populate the background network lines once layers are ready
         populateBackgroundNetwork();
 
