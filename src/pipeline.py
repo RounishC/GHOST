@@ -139,7 +139,7 @@ class RoutePipelineProcessor:
         }
 
     def print_result(self):
-        """Print a concise human-readable summary"""
+        """Print a concise human-readable summary with street names"""
         if not self.result:
             print("No result to display. Run process() first.")
             return
@@ -147,9 +147,16 @@ class RoutePipelineProcessor:
         result = self.result
         summary = result['summary']
         ai = result['ai_analysis']
+        route_details = result['route_result']['route_details']
 
-        print(f"\n✓ Route: {summary['path_segments']} ({summary['distance_km']} km)")
-        print(f"💡 {ai['reasoning']}\n")
+        # Build street names list
+        streets = [segment['road_name'] for segment in route_details]
+        street_path = " → ".join(streets)
+
+        print(f"\n🛣️  Streets to travel:")
+        print(f"   {street_path}")
+        print(f"\n📏 Distance: {summary['distance_km']} km")
+        print(f"\n💡 {ai['reasoning']}\n")
 
 
 def main():
