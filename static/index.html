@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GHOST — Ghost the bad routes</title>
+    <!-- Azure Maps Web SDK -->
+    <link rel="stylesheet" href="https://atlas.microsoft.com/sdk/javascript/mapcontrol/3/atlas.min.css" type="text/css">
+    <script src="https://atlas.microsoft.com/sdk/javascript/mapcontrol/3/atlas.min.js"></script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    
+    <!-- CSS Style -->
+    <link rel="stylesheet" href="index.css">
+</head>
+<body class="theme-night">
+    <!-- Map Container -->
+    <div id="myMap"></div>
+
+    <!-- Main Application UI Overlay -->
+    <div class="app-container">
+        
+        <!-- Left Side Floating Logo & Quick Stats -->
+        <div class="brand-panel glass">
+            <div class="logo-area">
+                <span class="logo-icon">👻</span>
+                <div class="logo-text">
+                    <h1>GHOST</h1>
+                    <p class="tagline">Ghost the bad routes.</p>
+                </div>
+            </div>
+            <div class="quick-status">
+                <div class="status-item">
+                    <span class="status-dot online"></span>
+                    <span id="system-time">Night Mode active</span>
+                </div>
+                <div class="theme-toggle-btn" id="theme-manual-toggle" title="Toggle theme manually">
+                    <span class="theme-icon">🌙</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Side Floating Panel (Arc Browser inspired glassmorphic card) -->
+        <div class="control-panel glass">
+            <!-- Navigation Tabs -->
+            <div class="panel-tabs">
+                <button class="tab-btn active" onclick="switchTab('plan')">🗺️ Route Planner</button>
+                <button class="tab-btn" onclick="switchTab('heatmap')">🔥 Heatmap</button>
+                <button class="tab-btn" onclick="switchTab('settings')">⚙️ Preferences</button>
+            </div>
+
+            <!-- Tab Content: Plan Route -->
+            <div id="tab-plan" class="tab-content active">
+                <div class="section-title">Configure Journey</div>
+                
+                <div class="input-group">
+                    <label>Start Destination (Longitude, Latitude)</label>
+                    <div class="coord-inputs">
+                        <input type="number" step="0.000001" id="start-lon" value="77.666125" placeholder="Lon">
+                        <input type="number" step="0.000001" id="start-lat" value="12.925200" placeholder="Lat">
+                        <button class="picker-btn" id="pick-start" title="Pick start on map">📍</button>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label>Goal Destination (Longitude, Latitude)</label>
+                    <div class="coord-inputs">
+                        <input type="number" step="0.000001" id="end-lon" value="77.667994" placeholder="Lon">
+                        <input type="number" step="0.000001" id="end-lat" value="12.925253" placeholder="Lat">
+                        <button class="picker-btn" id="pick-end" title="Pick end on map">🎯</button>
+                    </div>
+                </div>
+
+                <div class="section-title">Human-optimized Filters</div>
+                
+                <div class="slider-group">
+                    <div class="slider-header">
+                        <span>🛡️ Safety Level (Avoid Crime)</span>
+                        <span class="slider-val" id="val-safety">7/10</span>
+                    </div>
+                    <input type="range" min="0" max="10" value="7" class="slider" id="pref-safety" oninput="updateVal('safety')">
+                </div>
+
+                <div class="slider-group">
+                    <div class="slider-header">
+                        <span>🍃 Dust Level (Air Pollution)</span>
+                        <span class="slider-val" id="val-dust">3/10</span>
+                    </div>
+                    <input type="range" min="0" max="10" value="3" class="slider" id="pref-dust" oninput="updateVal('dust')">
+                </div>
+
+                <div class="slider-group">
+                    <div class="slider-header">
+                        <span>🔊 Noise Level (Tolerated noise)</span>
+                        <span class="slider-val" id="val-noise">4/10</span>
+                    </div>
+                    <input type="range" min="0" max="10" value="4" class="slider" id="pref-noise" oninput="updateVal('noise')">
+                </div>
+
+                <div class="slider-group">
+                    <div class="slider-header">
+                        <span>💡 Street Lighting (Min lighting)</span>
+                        <span class="slider-val" id="val-lighting">8/10</span>
+                    </div>
+                    <input type="range" min="0" max="10" value="8" class="slider" id="pref-lighting" oninput="updateVal('lighting')">
+                </div>
+
+                <div class="slider-group">
+                    <div class="slider-header">
+                        <span>🚧 Construction Avoidance</span>
+                        <span class="slider-val" id="val-construction">5/10</span>
+                    </div>
+                    <input type="range" min="0" max="10" value="5" class="slider" id="pref-construction" oninput="updateVal('construction')">
+                </div>
+
+                <button class="action-btn glow-button" id="find-route-btn" onclick="fetchRoute()">
+                    Compute Safe Route ⚡
+                </button>
+            </div>
+
+            <!-- Tab Content: Heatmap Options -->
+            <div id="tab-heatmap" class="tab-content">
+                <div class="section-title">Overlay Heatmaps</div>
+                <p class="description">Highlight risk profiles across all roads in the segment database. Click any road for raw metrics.</p>
+
+                <div class="heatmap-options">
+                    <button class="heatmap-opt active" id="heatmap-none" onclick="setHeatmapMode('none')">🚫 No Heatmap</button>
+                    <button class="heatmap-opt" id="heatmap-safety" onclick="setHeatmapMode('safety')">🛡️ Safety Score (Crime levels)</button>
+                    <button class="heatmap-opt" id="heatmap-cleanliness" onclick="setHeatmapMode('cleanliness')">🍃 Air Quality (Dust levels)</button>
+                    <button class="heatmap-opt" id="heatmap-noise" onclick="setHeatmapMode('noise')">🔊 Acoustic Comfort (Noise)</button>
+                    <button class="heatmap-opt" id="heatmap-lighting" onclick="setHeatmapMode('lighting')">💡 Street Lighting (Lux index)</button>
+                    <button class="heatmap-opt" id="heatmap-construction" onclick="setHeatmapMode('construction')">🚧 Active Construction Risk</button>
+                </div>
+
+                <div class="heatmap-legend" id="heatmap-legend" style="display: none;">
+                    <div class="legend-title">Heatmap Scale</div>
+                    <div class="legend-bar"></div>
+                    <div class="legend-labels">
+                        <span id="legend-low">Low risk</span>
+                        <span id="legend-high">High risk</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab Content: User Preferences -->
+            <div id="tab-settings" class="tab-content">
+                <div class="section-title">Walking Profiles</div>
+                
+                <div class="profile-card" onclick="applyProfile('grandma')">
+                    <div class="profile-name">👵 "Grandma's Advice First"</div>
+                    <div class="profile-desc">Ultra-safe, highly lit, low-construction roads. Shortest distance doesn't matter.</div>
+                </div>
+
+                <div class="profile-card" onclick="applyProfile('commuter')">
+                    <div class="profile-name">🏃‍♂️ "Comfort Commute"</div>
+                    <div class="profile-desc">Balanced safety and noise. Rejects heavy construction zones and high dust.</div>
+                </div>
+
+                <div class="profile-card" onclick="applyProfile('runner')">
+                    <div class="profile-name">🍃 "Clean Air Jogger"</div>
+                    <div class="profile-desc">Strictly minimizes dust/air pollution and noise. Prefers residential surfaces.</div>
+                </div>
+
+                <div class="section-title">System Settings</div>
+                <div class="setting-toggle">
+                    <span>🌙 Auto Day/Night Styling</span>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="auto-theme-toggle" checked onchange="toggleAutoTheme()">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Results Section (Dynamic) -->
+            <div class="results-section" id="results-card" style="display: none;">
+                <div class="section-title" style="margin-top: 15px;">Route Analysis</div>
+                
+                <!-- Citymapper Route Cards -->
+                <div class="route-cards-container">
+                    <div class="route-card active" id="ghost-card">
+                        <div class="card-badge">RECOMMENDED (AI)</div>
+                        <div class="card-row">
+                            <span class="card-title">GHOST Route</span>
+                            <span class="card-dist" id="ghost-dist">1.2 km</span>
+                        </div>
+                        <div class="quality-score-box">
+                            <span>Safety Score:</span>
+                            <div class="progress-bar-container">
+                                <div class="progress-bar green" id="safety-score-bar" style="width: 85%;"></div>
+                            </div>
+                            <span id="safety-score-txt">8.5/10</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Perplexity-like AI explanation -->
+                <div class="ai-reasoning-card">
+                    <div class="ai-header">
+                        <span class="ai-stars">✨</span>
+                        <h3>AI Route Reasoning</h3>
+                    </div>
+                    <div class="ai-body" id="ai-reasoning-body">
+                        Calculating...
+                    </div>
+                    <div class="highlights-container" id="ai-highlights-body">
+                        <!-- Highlights -->
+                    </div>
+                </div>
+
+                <!-- Grandma's Advice (AI powered comfort advice) -->
+                <div class="grandma-card">
+                    <div class="grandma-header">
+                        <span class="grandma-avatar">👵</span>
+                        <div>
+                            <h4>Grandma's Advice</h4>
+                            <p class="subtitle">Comfort &amp; safety context</p>
+                        </div>
+                    </div>
+                    <div class="grandma-body" id="grandma-advice-text">
+                        "Make sure to dress warmly, dear! I picked the path that stays away from construction so you won't trip. Outer Ring Road is nice and bright tonight."
+                    </div>
+                </div>
+            </div>
+
+            <!-- Loading Spinner Overlay inside Side Panel -->
+            <div class="loading-overlay" id="loading-overlay">
+                <div class="spinner"></div>
+                <p>Finding optimal safe pathway...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- JS Logic -->
+    <script src="app.js"></script>
+</body>
+</html>

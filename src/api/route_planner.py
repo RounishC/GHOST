@@ -77,6 +77,10 @@ class GHOSTRoutePlanner:
         if not is_valid:
             return {'error': message}
 
+        import math
+        def get_min_distance(seg, target_lon, target_lat):
+            return min(math.hypot(coord[0] - target_lon, coord[1] - target_lat) for coord in seg.geometry)
+
         # Find nearby segments for start and end points
         start_segments = self.loader.find_nearby_segments(start_lon, start_lat)
         end_segments = self.loader.find_nearby_segments(end_lon, end_lat)
@@ -84,28 +88,26 @@ class GHOSTRoutePlanner:
         if not start_segments or not end_segments:
             return {'error': 'No road segments found near start or end coordinates'}
 
-        # Try to find best path
-        best_path = None
-        best_cost = float('inf')
+        # Sort segments by physical proximity to the clicked coordinates
+        start_segments = sorted(start_segments, key=lambda s: get_min_distance(s, start_lon, start_lat))
+        end_segments = sorted(end_segments, key=lambda s: get_min_distance(s, end_lon, end_lat))
 
+        # Try to find path starting with the physically closest options
+        best_path = None
         for start_seg in start_segments:
             for end_seg in end_segments:
                 path = self.pathfinder.find_path(
                     start_seg.segment_id,
                     end_seg.segment_id,
-                    filters
+                    filters,
+                    start_coord=(start_lon, start_lat),
+                    end_coord=(end_lon, end_lat)
                 )
-                
                 if path:
-                    # Calculate total cost for this path
-                    cost = 0
-                    for seg_id in path:
-                        segment = self.segments[seg_id]
-                        cost += self.pathfinder.calculate_segment_cost(segment, filters)
-                    
-                    if cost < best_cost:
-                        best_cost = cost
-                        best_path = path
+                    best_path = path
+                    break
+            if best_path:
+                break
 
         if not best_path:
             return {'error': 'No route found between start and end points'}
@@ -127,7 +129,7 @@ class GHOSTRoutePlanner:
             },
             'reasoning': analysis.reasoning,
             'highlights': analysis.highlights,
-            'route_details': self._get_route_details(best_path),
+            'route_details': self._get_route_details(best_path, start_lon, start_lat),
             'timestamp': datetime.now().isoformat()
         }
 
@@ -136,12 +138,22 @@ class GHOSTRoutePlanner:
 
         return result
 
-    def _get_route_details(self, path: List[str]) -> List[Dict]:
-        """Get detailed information about each segment in the path"""
+    def _get_route_details(self, path: List[str], start_lon: float, start_lat: float) -> List[Dict]:
+        """Get detailed information about each segment in the path, oriented in direction of travel"""
+        import math
         details = []
+        current_end = (start_lon, start_lat)
         for seg_id in path:
             segment = self.segments.get(seg_id)
             if segment:
+                coords = list(segment.geometry)
+                # Check orientation
+                dist_start = math.hypot(coords[0][0] - current_end[0], coords[0][1] - current_end[1])
+                dist_end = math.hypot(coords[-1][0] - current_end[0], coords[-1][1] - current_end[1])
+                if dist_end < dist_start:
+                    coords.reverse()
+                current_end = coords[-1]
+                
                 details.append({
                     'segment_id': segment.segment_id,
                     'road_name': segment.road_name,
@@ -152,7 +164,7 @@ class GHOSTRoutePlanner:
                     'noise': segment.noise_level,
                     'lighting': segment.lighting,
                     'construction': segment.construction,
-                    'coordinates': segment.geometry
+                    'coordinates': coords
                 })
         return details
 

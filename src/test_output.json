@@ -1,5 +1,5 @@
 {
-  "execution_timestamp": "2026-06-25T14:49:55.663569",
+  "execution_timestamp": "2026-06-25T19:52:29.792431",
   "status": "success",
   "request": {
     "start": {
@@ -27,56 +27,107 @@
   "route_result": {
     "success": true,
     "path": [
-      "S022"
+      "S010"
     ],
-    "total_distance_meters": 184.5,
+    "total_distance_meters": 308.5,
     "segment_count": 1,
     "quality_scores": {
-      "safety": 1.0,
-      "cleanliness": 7.0,
-      "noise": 7.0,
-      "lighting": 2.0,
-      "construction_risk": 0
+      "safety": 5.0,
+      "cleanliness": 8.0,
+      "noise": 9.0,
+      "lighting": 4.0,
+      "construction_risk": 4
     },
     "route_details": [
       {
-        "segment_id": "S022",
+        "segment_id": "S010",
         "road_name": "Genesis Parking Road",
         "highway_type": "residential",
-        "distance_meters": 184.5,
-        "safety": 9,
-        "cleanliness": 3,
-        "noise": 3,
-        "lighting": 2,
-        "construction": 0,
+        "distance_meters": 308.5,
+        "safety": 5,
+        "cleanliness": 2,
+        "noise": 1,
+        "lighting": 4,
+        "construction": 4,
         "coordinates": [
-          [
-            77.6680519,
-            12.9256894
-          ],
-          [
-            77.6677478,
-            12.925695
-          ],
           [
             77.6663502,
             12.925726
+          ],
+          [
+            77.6663674,
+            12.925213
+          ],
+          [
+            77.6663775,
+            12.9251995
+          ],
+          [
+            77.6664156,
+            12.9251964
+          ],
+          [
+            77.6669823,
+            12.9251806
+          ],
+          [
+            77.6669946,
+            12.9251808
+          ],
+          [
+            77.6672985,
+            12.925176
+          ],
+          [
+            77.6673478,
+            12.9251822
+          ],
+          [
+            77.6673528,
+            12.9252416
+          ],
+          [
+            77.6680633,
+            12.9252625
+          ],
+          [
+            77.6681078,
+            12.9252675
+          ],
+          [
+            77.6681363,
+            12.9252818
+          ],
+          [
+            77.6681413,
+            12.9253063
+          ],
+          [
+            77.6681343,
+            12.9256679
+          ],
+          [
+            77.6681169,
+            12.9256782
+          ],
+          [
+            77.6680519,
+            12.9256894
           ]
         ]
       }
     ]
   },
   "ai_analysis": {
-    "reasoning": "**Efficient Route**: The recommended path covers only 184 meters, minimizing travel distance. **Clean Environment**: We've chosen cleaner roads (avg dust level: 3.0/10) for better air quality. **Quiet Route**: We've minimized noise exposure (avg level: 3.0/10), ideal for peaceful travel.",
+    "reasoning": "**Efficient Route**: The recommended path covers only 308 meters, minimizing travel distance. **Good Safety Consideration**: We've selected segments with moderate crime levels (avg: 5.0/10). **Clean Environment**: We've chosen cleaner roads (avg dust level: 2.0/10) for better air quality. **Quiet Route**: We've minimized noise exposure (avg level: 1.0/10), ideal for peaceful travel.",
     "highlights": [
-      "\u2713 Safest segment: Genesis Parking Road (Crime: 9/10)",
-      "\u26a0\ufe0f Higher crime area: Genesis Parking Road (Crime: 9/10)",
+      "\u2713 Safest segment: Genesis Parking Road (Crime: 5/10)",
       "Primary route type: Residential"
     ]
   },
   "summary": {
-    "distance_km": 0.18,
-    "overall_quality": 3.4,
-    "path_segments": "S022"
+    "distance_km": 0.31,
+    "overall_quality": 6.0,
+    "path_segments": "S010"
   }
 }

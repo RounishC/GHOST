@@ -49,50 +49,65 @@ class AStarPathfinder:
 
     def calculate_segment_cost(self, segment, filters: Dict[str, float]) -> float:
         """
-        Calculate cost of traversing a segment based on filters
+        Calculate cost of traversing a segment based on filters.
         Filters: {'safety': 0-10, 'cleanliness': 0-10, 'noise': 0-10, 
-                  'lighting': 0-10, 'construction': 0-10}
+                  'lighting': 0-10, 'construction': 0-10,
+                  'dust_level': 0-10, 'noise_level': 0-10}
         
-        Lower cost is better
+        Lower cost is better. Weights are scaled dynamically.
         """
         cost = segment.length_meters  # Base cost is distance
 
-        # Safety factor (crime_score: 0-10, lower is safer)
-        if 'safety' in filters:
-            safety_weight = filters['safety']  # User's safety preference (0-10)
-            # If user wants safety=10 (very safe), penalize high crime segments
-            safety_penalty = max(0, segment.crime_score - (10 - safety_weight)) * 10
-            cost += safety_penalty
+        # 1. Safety Factor (crime_score: 0-10, lower crime is safer)
+        safety_pref = filters.get('safety', 5)
+        safety_threshold = 10 - safety_pref
+        # Higher safety pref means lower tolerance for crime (lower threshold) and higher penalty weight
+        dynamic_safety_weight = safety_pref * 12.0
+        safety_penalty = max(0, segment.crime_score - safety_threshold) * dynamic_safety_weight
+        cost += safety_penalty
 
-        # Cleanliness factor (dust_level: 0-10, lower is cleaner)
-        if 'cleanliness' in filters:
-            cleanliness_weight = filters['cleanliness']
-            dust_penalty = max(0, segment.dust_level - (10 - cleanliness_weight)) * 5
-            cost += dust_penalty
+        # 2. Cleanliness/Dust Factor (dust_level: 0-10, lower dust is cleaner)
+        # Handle both backend 'cleanliness' and frontend 'dust_level' keys
+        if 'dust_level' in filters:
+            dust_threshold = filters['dust_level']
+        else:
+            dust_threshold = 10 - filters.get('cleanliness', 5)
+        # A lower preferred dust level means higher sensitivity/weight and lower threshold
+        dynamic_dust_weight = (10 - dust_threshold) * 8.0
+        dust_penalty = max(0, segment.dust_level - dust_threshold) * dynamic_dust_weight
+        cost += dust_penalty
 
-        # Noise factor (noise_level: 0-10, lower is quieter)
-        if 'noise' in filters:
-            noise_weight = filters['noise']
-            noise_penalty = max(0, segment.noise_level - (10 - noise_weight)) * 5
-            cost += noise_penalty
+        # 3. Noise Factor (noise_level: 0-10, lower noise is quieter)
+        if 'noise_level' in filters:
+            noise_threshold = filters['noise_level']
+            dynamic_noise_weight = (10 - noise_threshold) * 8.0
+        else:
+            noise_pref = filters.get('noise', 5)
+            noise_threshold = 10 - noise_pref
+            dynamic_noise_weight = noise_pref * 8.0
+        noise_penalty = max(0, segment.noise_level - noise_threshold) * dynamic_noise_weight
+        cost += noise_penalty
 
-        # Lighting factor (lighting: 0-10, higher is better)
-        if 'lighting' in filters:
-            lighting_weight = filters['lighting']
-            # Prefer well-lit paths
-            lighting_bonus = max(0, (10 - segment.lighting) * (lighting_weight / 10)) * 3
-            cost += lighting_bonus
+        # 4. Lighting Factor (lighting: 0-10, higher is better lit)
+        lighting_threshold = filters.get('lighting', 5)
+        # Higher lighting preference means higher threshold for acceptable light
+        dynamic_lighting_weight = lighting_threshold * 8.0
+        lighting_penalty = max(0, lighting_threshold - segment.lighting) * dynamic_lighting_weight
+        cost += lighting_penalty
 
-        # Construction factor (construction: 0-10, lower is better)
-        if 'construction' in filters:
-            construction_weight = filters['construction']
-            construction_penalty = segment.construction * (construction_weight / 10) * 50
-            cost += construction_penalty
+        # 5. Construction Factor (construction: 0-10, lower construction is better)
+        construction_threshold = filters.get('construction', 5)
+        # Lower construction threshold means less tolerance, higher penalty
+        dynamic_construction_weight = (10 - construction_threshold) * 10.0
+        construction_penalty = max(0, segment.construction - construction_threshold) * dynamic_construction_weight
+        cost += construction_penalty
 
         return cost
 
     def find_path(self, start_segment_id: str, end_segment_id: str,
-                  filters: Dict[str, float]) -> Optional[List[str]]:
+                  filters: Dict[str, float],
+                  start_coord: Optional[Tuple[float, float]] = None,
+                  end_coord: Optional[Tuple[float, float]] = None) -> Optional[List[str]]:
         """
         Find optimal path using A* algorithm
         
@@ -100,6 +115,8 @@ class AStarPathfinder:
             start_segment_id: Starting segment ID
             end_segment_id: Ending segment ID
             filters: Dictionary of user preferences
+            start_coord: Optional target start coordinate tuple (lon, lat)
+            end_coord: Optional target end coordinate tuple (lon, lat)
             
         Returns:
             List of segment IDs forming the path, or None if no path found
@@ -110,8 +127,10 @@ class AStarPathfinder:
         start_segment = self.segments[start_segment_id]
         end_segment = self.segments[end_segment_id]
         
-        start_coord = start_segment.get_end_point()
-        end_coord = end_segment.get_start_point()
+        if start_coord is None:
+            start_coord = start_segment.get_end_point()
+        if end_coord is None:
+            end_coord = end_segment.get_start_point()
 
         open_set = []
         g_scores = {start_segment_id: 0}
@@ -179,24 +198,29 @@ class AStarPathfinder:
         return None  # No path found
 
     def build_graph(self) -> Dict[str, List[str]]:
-        """Build adjacency graph from segments"""
+        """Build adjacency graph from segments, supporting bidirectional connections"""
         graph = {}
+        tolerance = 0.00025  # ≈ 25 meters connection tolerance
         
         for seg_id, segment in self.segments.items():
             graph[seg_id] = []
-            end_point = segment.get_end_point()
             
-            # Find segments that start near this segment's end point
             for other_id, other_segment in self.segments.items():
                 if seg_id == other_id:
                     continue
                     
-                start_point = other_segment.get_start_point()
-                
-                # Check if endpoints are very close (within 0.001 degrees ≈ 100 meters)
-                # More lenient tolerance for real-world road network
-                if abs(end_point[0] - start_point[0]) < 0.001 and \
-                   abs(end_point[1] - start_point[1]) < 0.001:
+                # Check if any vertex of A is close to any vertex of B
+                connected = False
+                for p1 in segment.geometry:
+                    for p2 in other_segment.geometry:
+                        if abs(p1[0] - p2[0]) < tolerance and \
+                           abs(p1[1] - p2[1]) < tolerance:
+                            connected = True
+                            break
+                    if connected:
+                        break
+                        
+                if connected:
                     graph[seg_id].append(other_id)
         
         return graph
