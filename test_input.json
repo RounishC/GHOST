@@ -1,0 +1,23 @@
+{
+  "data_file": "ghost_segments.toon",
+  "route_request": {
+    "start": {
+      "latitude": 12.925200,
+      "longitude": 77.666125,
+      "name": "Point A"
+    },
+    "end": {
+      "latitude": 12.925253,
+      "longitude": 77.667994,
+      "name": "Point B"
+    },
+    "preferences": {
+      "safety": 7,
+      "cleanliness": 8,
+      "noise": 7,
+      "lighting": 8,
+      "construction": 5
+    },
+    "output_file": "test_output.json"
+  }
+}

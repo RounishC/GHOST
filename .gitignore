@@ -48,6 +48,8 @@ ghost_planner.log
 
 # Output files
 *.json
+!test_input.json
+!src/test_output.json
 routes/
 exports/
 

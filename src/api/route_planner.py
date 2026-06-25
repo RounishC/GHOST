@@ -25,9 +25,14 @@ class GHOSTRoutePlanner:
         Initialize the route planner
         
         Args:
-            data_file: Path to ghost_segments.toon file
+            data_file: Path to ghost_segments.toon file (can be absolute or relative path)
         """
-        self.loader = DataLoader(data_file)
+        # Verify file exists
+        if not os.path.exists(data_file):
+            raise FileNotFoundError(f"Data file not found: {data_file}")
+        
+        self.data_file = os.path.abspath(data_file)
+        self.loader = DataLoader(self.data_file)
         self.segments = self.loader.load()
         
         # Build graph for pathfinding

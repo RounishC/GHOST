@@ -1,0 +1,82 @@
+{
+  "execution_timestamp": "2026-06-25T14:49:55.663569",
+  "status": "success",
+  "request": {
+    "start": {
+      "name": "Point A",
+      "coordinates": {
+        "longitude": 77.666125,
+        "latitude": 12.9252
+      }
+    },
+    "end": {
+      "name": "Point B",
+      "coordinates": {
+        "longitude": 77.667994,
+        "latitude": 12.925253
+      }
+    },
+    "user_preferences": {
+      "safety": 7,
+      "cleanliness": 8,
+      "noise": 7,
+      "lighting": 8,
+      "construction": 5
+    }
+  },
+  "route_result": {
+    "success": true,
+    "path": [
+      "S022"
+    ],
+    "total_distance_meters": 184.5,
+    "segment_count": 1,
+    "quality_scores": {
+      "safety": 1.0,
+      "cleanliness": 7.0,
+      "noise": 7.0,
+      "lighting": 2.0,
+      "construction_risk": 0
+    },
+    "route_details": [
+      {
+        "segment_id": "S022",
+        "road_name": "Genesis Parking Road",
+        "highway_type": "residential",
+        "distance_meters": 184.5,
+        "safety": 9,
+        "cleanliness": 3,
+        "noise": 3,
+        "lighting": 2,
+        "construction": 0,
+        "coordinates": [
+          [
+            77.6680519,
+            12.9256894
+          ],
+          [
+            77.6677478,
+            12.925695
+          ],
+          [
+            77.6663502,
+            12.925726
+          ]
+        ]
+      }
+    ]
+  },
+  "ai_analysis": {
+    "reasoning": "**Efficient Route**: The recommended path covers only 184 meters, minimizing travel distance. **Clean Environment**: We've chosen cleaner roads (avg dust level: 3.0/10) for better air quality. **Quiet Route**: We've minimized noise exposure (avg level: 3.0/10), ideal for peaceful travel.",
+    "highlights": [
+      "\u2713 Safest segment: Genesis Parking Road (Crime: 9/10)",
+      "\u26a0\ufe0f Higher crime area: Genesis Parking Road (Crime: 9/10)",
+      "Primary route type: Residential"
+    ]
+  },
+  "summary": {
+    "distance_km": 0.18,
+    "overall_quality": 3.4,
+    "path_segments": "S022"
+  }
+}
