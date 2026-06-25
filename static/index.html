@@ -26,7 +26,6 @@
         <!-- Left Side Floating Logo & Quick Stats -->
         <div class="brand-panel glass">
             <div class="logo-area">
-                <span class="logo-icon">👻</span>
                 <div class="logo-text">
                     <h1>GHOST</h1>
                     <p class="tagline">Ghost the bad routes.</p>
@@ -47,9 +46,9 @@
         <div class="control-panel glass">
             <!-- Navigation Tabs -->
             <div class="panel-tabs">
-                <button class="tab-btn active" onclick="switchTab('plan')">🗺️ Route Planner</button>
-                <button class="tab-btn" onclick="switchTab('heatmap')">🔥 Heatmap</button>
-                <button class="tab-btn" onclick="switchTab('settings')">⚙️ Preferences</button>
+                <button class="tab-btn active" onclick="switchTab('plan')">Route Planner</button>
+                <button class="tab-btn" onclick="switchTab('heatmap')">Heatmap</button>
+                <button class="tab-btn" onclick="switchTab('settings')">Preferences</button>
             </div>
 
             <!-- Tab Content: Plan Route -->
@@ -61,7 +60,7 @@
                     <div class="coord-inputs">
                         <input type="number" step="0.000001" id="start-lon" value="77.666125" placeholder="Lon">
                         <input type="number" step="0.000001" id="start-lat" value="12.925200" placeholder="Lat">
-                        <button class="picker-btn" id="pick-start" title="Pick start on map">📍</button>
+                        <button class="picker-btn" id="pick-start" title="Pick start on map">A</button>
                     </div>
                 </div>
 
@@ -70,7 +69,7 @@
                     <div class="coord-inputs">
                         <input type="number" step="0.000001" id="end-lon" value="77.667994" placeholder="Lon">
                         <input type="number" step="0.000001" id="end-lat" value="12.925253" placeholder="Lat">
-                        <button class="picker-btn" id="pick-end" title="Pick end on map">🎯</button>
+                        <button class="picker-btn" id="pick-end" title="Pick end on map">B</button>
                     </div>
                 </div>
 
@@ -78,7 +77,7 @@
                 
                 <div class="slider-group">
                     <div class="slider-header">
-                        <span>🛡️ Safety Level (Avoid Crime)</span>
+                        <span>Safety Level (Avoid Crime)</span>
                         <span class="slider-val" id="val-safety">7/10</span>
                     </div>
                     <input type="range" min="0" max="10" value="7" class="slider" id="pref-safety" oninput="updateVal('safety')">
@@ -86,7 +85,7 @@
 
                 <div class="slider-group">
                     <div class="slider-header">
-                        <span>🍃 Dust Level (Air Pollution)</span>
+                        <span>Dust Level (Air Pollution)</span>
                         <span class="slider-val" id="val-dust">3/10</span>
                     </div>
                     <input type="range" min="0" max="10" value="3" class="slider" id="pref-dust" oninput="updateVal('dust')">
@@ -94,7 +93,7 @@
 
                 <div class="slider-group">
                     <div class="slider-header">
-                        <span>🔊 Noise Level (Tolerated noise)</span>
+                        <span>Noise Level (Tolerated noise)</span>
                         <span class="slider-val" id="val-noise">4/10</span>
                     </div>
                     <input type="range" min="0" max="10" value="4" class="slider" id="pref-noise" oninput="updateVal('noise')">
@@ -102,7 +101,7 @@
 
                 <div class="slider-group">
                     <div class="slider-header">
-                        <span>💡 Street Lighting (Min lighting)</span>
+                        <span>Street Lighting (Min lighting)</span>
                         <span class="slider-val" id="val-lighting">8/10</span>
                     </div>
                     <input type="range" min="0" max="10" value="8" class="slider" id="pref-lighting" oninput="updateVal('lighting')">
@@ -110,14 +109,14 @@
 
                 <div class="slider-group">
                     <div class="slider-header">
-                        <span>🚧 Construction Avoidance</span>
+                        <span>Construction Avoidance</span>
                         <span class="slider-val" id="val-construction">5/10</span>
                     </div>
                     <input type="range" min="0" max="10" value="5" class="slider" id="pref-construction" oninput="updateVal('construction')">
                 </div>
 
                 <button class="action-btn glow-button" id="find-route-btn" onclick="fetchRoute()">
-                    Compute Safe Route ⚡
+                    Compute Safe Route
                 </button>
             </div>
 
@@ -127,12 +126,12 @@
                 <p class="description">Highlight risk profiles across all roads in the segment database. Click any road for raw metrics.</p>
 
                 <div class="heatmap-options">
-                    <button class="heatmap-opt active" id="heatmap-none" onclick="setHeatmapMode('none')">🚫 No Heatmap</button>
-                    <button class="heatmap-opt" id="heatmap-safety" onclick="setHeatmapMode('safety')">🛡️ Safety Score (Crime levels)</button>
-                    <button class="heatmap-opt" id="heatmap-cleanliness" onclick="setHeatmapMode('cleanliness')">🍃 Air Quality (Dust levels)</button>
-                    <button class="heatmap-opt" id="heatmap-noise" onclick="setHeatmapMode('noise')">🔊 Acoustic Comfort (Noise)</button>
-                    <button class="heatmap-opt" id="heatmap-lighting" onclick="setHeatmapMode('lighting')">💡 Street Lighting (Lux index)</button>
-                    <button class="heatmap-opt" id="heatmap-construction" onclick="setHeatmapMode('construction')">🚧 Active Construction Risk</button>
+                    <button class="heatmap-opt active" id="heatmap-none" onclick="setHeatmapMode('none')">No Heatmap</button>
+                    <button class="heatmap-opt" id="heatmap-safety" onclick="setHeatmapMode('safety')">Safety Score (Crime levels)</button>
+                    <button class="heatmap-opt" id="heatmap-cleanliness" onclick="setHeatmapMode('cleanliness')">Air Quality (Dust levels)</button>
+                    <button class="heatmap-opt" id="heatmap-noise" onclick="setHeatmapMode('noise')">Acoustic Comfort (Noise)</button>
+                    <button class="heatmap-opt" id="heatmap-lighting" onclick="setHeatmapMode('lighting')">Street Lighting (Lux index)</button>
+                    <button class="heatmap-opt" id="heatmap-construction" onclick="setHeatmapMode('construction')">Active Construction Risk</button>
                 </div>
 
                 <div class="heatmap-legend" id="heatmap-legend" style="display: none;">
@@ -199,7 +198,6 @@
                 <!-- Perplexity-like AI explanation -->
                 <div class="ai-reasoning-card">
                     <div class="ai-header">
-                        <span class="ai-stars">✨</span>
                         <h3>AI Route Reasoning</h3>
                     </div>
                     <div class="ai-body" id="ai-reasoning-body">

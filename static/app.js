@@ -330,15 +330,15 @@ function setPickerMode(mode) {
     activePickerMode = mode;
     const btn = document.getElementById(`pick-${mode}`);
     btn.classList.add('active');
-    btn.textContent = '👆 Click Map';
+    btn.textContent = 'Click Map';
 }
 
 function resetPickerMode() {
     activePickerMode = null;
     document.getElementById('pick-start').classList.remove('active');
-    document.getElementById('pick-start').textContent = '📍';
+    document.getElementById('pick-start').textContent = 'A';
     document.getElementById('pick-end').classList.remove('active');
-    document.getElementById('pick-end').textContent = '🎯';
+    document.getElementById('pick-end').textContent = 'B';
 }
 
 // Update value displays for sliders
