@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>GHOST - Geo-aware Human Optimized Safe Travel</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+  <div class="noise" aria-hidden="true"></div>
+  <div class="orb orb-blue" aria-hidden="true"></div>
+  <div class="orb orb-violet" aria-hidden="true"></div>
+  <div class="orb orb-emerald" aria-hidden="true"></div>
+
+  <header class="nav-wrap glass">
+    <div class="logo">GHOST</div>
+    <p class="nav-tagline">Geo-aware Human Optimized Safe Travel</p>
+    <a href="#prototype" class="nav-link">Mobile Prototype</a>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div id="hero-map" class="hero-map" aria-label="Interactive night city map"></div>
+      <div class="hero-overlay"></div>
+
+      <div class="hero-content">
+        <p class="kicker">AI Route Intelligence</p>
+        <h1>Ghost the bad routes.</h1>
+        <p class="hero-copy">GHOST chooses safer, cleaner, and calmer paths using urban intelligence: lighting, crime trends, construction, noise, pollution, crowd dynamics, and your comfort profile.</p>
+        <button id="ghost-btn" class="cta">Ghost the bad routes</button>
+        <p class="hero-note" id="hero-status">Live routing model ready.</p>
+      </div>
+
+      <aside class="recommend-card glass" id="recommend-card">
+        <p class="card-title">👻 Recommended Route</p>
+        <div class="score-row"><span>Safety Score:</span><strong id="safety-score">92</strong></div>
+        <div class="score-row"><span>Comfort Score:</span><strong id="comfort-score">88</strong></div>
+        <ul class="recommend-list">
+          <li>✓ Well lit streets</li>
+          <li>✓ Low crime activity</li>
+          <li>✓ Low pollution</li>
+        </ul>
+        <div class="delta-row">
+          <span>+5 minutes</span>
+          <span>+37% comfort</span>
+        </div>
+      </aside>
+
+      <div class="legend glass">
+        <span><i class="dot safe"></i> Safe</span>
+        <span><i class="dot caution"></i> Moderate</span>
+        <span><i class="dot risk"></i> Risk</span>
+      </div>
+    </section>
+
+    <section class="prototype" id="prototype">
+      <div class="section-head">
+        <p class="kicker">Mobile Experience</p>
+        <h2>Investor-demo ready app prototype</h2>
+      </div>
+
+      <div class="prototype-grid">
+        <article class="feature-stack glass">
+          <h3>Core Screens</h3>
+          <ul>
+            <li>Home map with glowing route intelligence</li>
+            <li>Route comparison for safety vs speed vs comfort</li>
+            <li>AI explanation stream with confidence cues</li>
+            <li>Safety heatmap and Night Walking mode</li>
+            <li>Preference tuning by human comfort signals</li>
+          </ul>
+          <div class="feature-pills">
+            <span>Lighting</span>
+            <span>Crime</span>
+            <span>Noise</span>
+            <span>Pollution</span>
+            <span>Crowd</span>
+          </div>
+        </article>
+
+        <article class="phone-shell">
+          <div class="phone-notch"></div>
+          <div class="phone-screen">
+            <div class="phone-map-wrap">
+              <div id="phone-map" class="phone-map"></div>
+              <div class="phone-chip">Night walk mode</div>
+            </div>
+
+            <div class="proto-tabs glass">
+              <button class="proto-tab active" data-proto="map">Map</button>
+              <button class="proto-tab" data-proto="compare">Compare</button>
+              <button class="proto-tab" data-proto="ai">AI</button>
+            </div>
+
+            <div class="proto-panel active" data-panel="map">
+              <div class="mini-card glass">
+                <strong>Route A</strong>
+                <p>Low-crime, well-lit, cleaner air corridor.</p>
+              </div>
+            </div>
+
+            <div class="proto-panel" data-panel="compare">
+              <div class="mini-card glass">
+                <strong>Safe Route</strong>
+                <p>+5 min, +37% comfort</p>
+              </div>
+              <div class="mini-card glass">
+                <strong>Fast Route</strong>
+                <p>Riskier intersections after dark</p>
+              </div>
+            </div>
+
+            <div class="proto-panel" data-panel="ai">
+              <div class="mini-card glass">
+                <strong>AI Reasoning</strong>
+                <p>This path avoids poorly lit segments and active construction while preserving moderate travel time.</p>
+              </div>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+  </div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <script src="/static/app.js"></script>
+</body>
+</html>
