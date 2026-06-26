@@ -9,4 +9,4 @@ description = "GHOST - Geospatial Heuristic Optimal Segment Tracker"
 requires-python = ">=3.9"
 
 [tool.vercel]
-entrypoint = "src.api_server:app"
+entrypoint = "app:app"
