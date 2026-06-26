@@ -1,15 +1,13 @@
-from flask import Flask, jsonify
+from flask import Flask
 
 app = Flask(__name__)
 
 @app.route('/')
-def hello():
-    return jsonify({"message": "GHOST Route Planner - API Ready", "status": "ok"}), 200
+def home():
+    return {"message": "GHOST Route Planner", "status": "ok"}, 200
 
-@app.route('/api/health')
+@app.route('/api/health')  
 def health():
-    return jsonify({"status": "healthy"}), 200
+    return {"status": "healthy"}, 200
 
-@app.route('/api/config')
-def config():
-    return jsonify({"config": "available"}), 200
+
