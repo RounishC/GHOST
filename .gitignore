@@ -50,6 +50,7 @@ ghost_planner.log
 *.json
 !test_input.json
 !src/test_output.json
+!vercel.json
 routes/
 exports/
 

@@ -9,8 +9,11 @@ import json
 import sys
 import os
 
-# Add parent directory to path
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
+# Add this file's own directory (src/) and the repo root to path, since the
+# serverless runtime imports this module rather than executing it as __main__,
+# so Python's automatic script-directory path insertion can't be relied on.
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '..'))
 
 from pipeline import RoutePipelineProcessor
 from utils.config_manager import ConfigManager
@@ -92,9 +95,9 @@ def get_route():
             }
         }
         
-        # Save config temporarily inside the workspace
-        temp_dir = os.path.join(os.path.dirname(__file__), '..', '.tmp')
-        os.makedirs(temp_dir, exist_ok=True)
+        # Save config temporarily (use system temp dir - workspace is read-only in serverless deployments)
+        import tempfile
+        temp_dir = tempfile.gettempdir()
         config_file = os.path.join(temp_dir, "route_config.json")
         with open(config_file, 'w') as f:
             json.dump(config, f)

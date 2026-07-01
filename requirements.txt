@@ -1,7 +1,2 @@
-# No external dependencies required
-# This project uses only Python standard library
-
-# Optional for enhanced features:
-# flask==2.3.0        # For REST API deployment
-# numpy==1.24.0       # For advanced mathematical operations
-# scipy==1.10.0       # For optimization algorithms
+flask==2.3.0
+flask-cors==4.0.0
